@@ -21,3 +21,14 @@ async def telegram_webhook(request: Request):
     if message.lower() == "/start":
         requests.post(TELEGRAM_API_URL, data={"chat_id": chat_id, "text": "🤖 ZoomActuBot est connecté et actif !"})
     return {"ok": True}
+
+
+@app.get("/send")
+def send_message(msg: str = "Test ZoomActu"):
+    if not TELEGRAM_TOKEN or not TELEGRAM_USER_ID:
+        return {"error": "Missing Telegram configuration"}
+    response = requests.post(TELEGRAM_API_URL, data={
+        "chat_id": TELEGRAM_USER_ID,
+        "text": msg
+    })
+    return {"status": "Message sent", "response": response.json()}
